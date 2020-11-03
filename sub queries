@@ -1,0 +1,98 @@
+mysql> create table product(id int,name varchar(20));
+Query OK, 0 rows affected (0.41 sec)
+mysql> insert into product values(101,'mobile');
+Query OK, 1 row affected (0.15 sec)
+mysql> insert into product values(102,'machine');
+Query OK, 1 row affected (0.07 sec)
+mysql> insert into product values(103,'Air conditioner');
+Query OK, 1 row affected (0.06 sec)
+mysql> select *from product;
++------+-----------------+
+| id   | name            |
++------+-----------------+
+|  101 | mobile          |
+|  102 | machine         |
+|  103 | Air conditioner |
++------+-----------------+
+3 rows in set (0.00 sec)
+mysql> create table sales(id int,unitprice int,qtysold int);
+Query OK, 0 rows affected (0.39 sec)
+mysql> insert into sales values(101,3500,6);
+Query OK, 1 row affected (0.14 sec)
+mysql> insert into sales values(102,2800,9);
+Query OK, 1 row affected (0.07 sec)
+mysql> insert into sales values(103,4500,8);
+Query OK, 1 row affected (0.07 sec)
+mysql> insert into sales values(104,3456,5);
+Query OK, 1 row affected (0.12 sec)
+mysql> select * from sales;
++------+-----------+---------+
+| id   | unitprice | qtysold |
++------+-----------+---------+
+|  101 |      3500 |       6 |
+|  102 |      2800 |       9 |
+|  103 |      4500 |       8 |
+|  104 |      3456 |       5 |
++------+-----------+---------+
+4 rows in set (0.00 sec)
+mysql> select id,name from product where 
+id in(select unitprice from sales);
++------+----------+
+| id   | name     |
++------+----------+
+|  103 | Air conditioner |
+|  102 | machine  |
++------+----------+
+2 rows in set (0.08 sec)
+mysql> select id,name from product where 
+id>(select id from sales where unitprice=3500);
++------+----------+
+| id   | name     |
++------+----------+
+| 103  | Air conditioner |
++------+----------+
+1 row in set (0.10 sec)
+mysql> select id,name from product where 
+id>(select id from sales where unitprice=3500);
++------+----------+
+| id   | name     |
++------+----------+
+|  103 | Air conditioner |
++------+----------+
+1 row in set (0.00 sec)
+mysql> select id,name from product where 
+id NOT IN(select unitprice from sales);
++------+------+
+| id   | name |
++------+------+
+| 101  | mobile |
++------+------+
+1 row in set (0.17 sec)
+mysql> select id,prodid from sales where 
+id=(select max(id) from product);
++------+--------+
+| id     unitprice |
++------+--------+
+|    3 |    3 |
++------+--------+
+1 row in set (0.19 sec)
+mysql> select id,name from product where 
+id in(select min(id) from sales group by prodid);
++------+--------+
+| id   | name   |
++------+--------+
+|    101 | mobile    |
+|    102 | machine|
++------+--------+
+2 rows in set (0.06 sec)
+mysql> select id,name from product where 
+id not in(select id from sales where prodid in(2));
++------+----------+
+| id   | name     |
++------+----------+
+|    101 | mobile     |
+|    103 | air conditioner |
++------+----------+
+2 rows in set (0.00 sec)
+
+
